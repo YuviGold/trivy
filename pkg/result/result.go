@@ -258,7 +258,7 @@ func summarize(status types.MisconfStatus, summary *report.MisconfSummary) {
 
 func toSlice(uniqVulns map[string]types.DetectedVulnerability) []types.DetectedVulnerability {
 	// Convert map to slice
-	var vulnerabilities []types.DetectedVulnerability
+	vulnerabilities := make([]types.DetectedVulnerability, 0)
 	for _, vuln := range uniqVulns {
 		vulnerabilities = append(vulnerabilities, vuln)
 	}

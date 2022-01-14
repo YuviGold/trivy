@@ -61,7 +61,7 @@ type Result struct {
 	Class             ResultClass                      `json:"Class,omitempty"`
 	Type              string                           `json:"Type,omitempty"`
 	Packages          []ftypes.Package                 `json:"Packages,omitempty"`
-	Vulnerabilities   []types.DetectedVulnerability    `json:"Vulnerabilities,omitempty"`
+	Vulnerabilities   []types.DetectedVulnerability    `json:"Vulnerabilities"`
 	MisconfSummary    *MisconfSummary                  `json:"MisconfSummary,omitempty"`
 	Misconfigurations []types.DetectedMisconfiguration `json:"Misconfigurations,omitempty"`
 }
