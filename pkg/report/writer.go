@@ -60,10 +60,10 @@ type Result struct {
 	Target            string                           `json:"Target"`
 	Class             ResultClass                      `json:"Class,omitempty"`
 	Type              string                           `json:"Type,omitempty"`
-	Packages          []ftypes.Package                 `json:"Packages,omitempty"`
+	Packages          []ftypes.Package                 `json:"Packages"`
 	Vulnerabilities   []types.DetectedVulnerability    `json:"Vulnerabilities"`
 	MisconfSummary    *MisconfSummary                  `json:"MisconfSummary,omitempty"`
-	Misconfigurations []types.DetectedMisconfiguration `json:"Misconfigurations,omitempty"`
+	Misconfigurations []types.DetectedMisconfiguration `json:"Misconfigurations"`
 }
 
 type MisconfSummary struct {

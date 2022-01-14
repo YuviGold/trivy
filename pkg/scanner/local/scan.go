@@ -94,7 +94,7 @@ func (s Scanner) Scan(target string, artifactKey string, blobKeys []string, opti
 
 	// Scan IaC config files
 	if utils.StringInSlice(types.SecurityCheckConfig, options.SecurityChecks) {
-		configResults := s.misconfsToResults(artifactDetail.Misconfigurations, options)
+		configResults := s.misconfsToResults(target, artifactDetail.Misconfigurations, options)
 		results = append(results, configResults...)
 	}
 
@@ -117,7 +117,7 @@ func (s Scanner) checkVulnerabilities(target string, detail ftypes.ArtifactDetai
 	}
 
 	if utils.StringInSlice(types.VulnTypeLibrary, options.VulnType) {
-		libResults, err := s.scanLibrary(detail.Applications, options)
+		libResults, err := s.scanLibrary(target, detail.Applications, options)
 		if err != nil {
 			return nil, false, xerrors.Errorf("failed to scan application libraries: %w", err)
 		}
@@ -178,10 +178,13 @@ func (s Scanner) detectVulnsInOSPkgs(target, osFamily, osName string, pkgs []fty
 	return result, eosl, nil
 }
 
-func (s Scanner) scanLibrary(apps []ftypes.Application, options types.ScanOptions) (report.Results, error) {
+func (s Scanner) scanLibrary(target string, apps []ftypes.Application, options types.ScanOptions) (report.Results, error) {
 	log.Logger.Infof("Number of language-specific files: %d", len(apps))
 	if len(apps) == 0 {
-		return nil, nil
+		return report.Results{{
+			Target: target,
+			Class:  report.ClassLangPkg,
+		}}, nil
 	}
 
 	var results report.Results
@@ -226,8 +229,15 @@ func (s Scanner) scanLibrary(apps []ftypes.Application, options types.ScanOption
 	return results, nil
 }
 
-func (s Scanner) misconfsToResults(misconfs []ftypes.Misconfiguration, options types.ScanOptions) report.Results {
+func (s Scanner) misconfsToResults(target string, misconfs []ftypes.Misconfiguration, options types.ScanOptions) report.Results {
 	log.Logger.Infof("Detected config files: %d", len(misconfs))
+	if len(misconfs) == 0 {
+		return report.Results{{
+			Target: target,
+			Class:  report.ClassConfig,
+		}}
+	}
+
 	var results report.Results
 	for _, misconf := range misconfs {
 		log.Logger.Debugf("Scanned config file: %s", misconf.FilePath)

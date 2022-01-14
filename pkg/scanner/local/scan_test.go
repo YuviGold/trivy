@@ -540,8 +540,14 @@ func TestScanner_Scan(t *testing.T) {
 					Err: analyzer.ErrUnknownOS,
 				},
 			},
-			wantResults: nil,
-			wantOS:      nil,
+			wantResults: report.Results{
+				// TODO: Should it be empty per requirement?
+				{
+					Target: "busybox:latest",
+					Class:  report.ClassLangPkg,
+				},
+			},
+			wantOS: nil,
 		},
 		{
 			name: "happy path with only library detection",
